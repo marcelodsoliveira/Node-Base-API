@@ -13,14 +13,13 @@ export const register = async (req: Request, res: Response) => {
         if(!hasUser) {
             let newUser = await User.create({ email, password });
 
-            res.status(201);
-            res.json({ id: newUser.id });
+            return res.status(201).json({ id: newUser.id });
         } else {
-            res.json({ error: 'E-mail já existe.' });
+            return res.json({ error: 'E-mail já existe.' });
         }
     }
 
-    res.json({ error: 'E-mail e/ou senha não enviados.' });
+    return res.json({ error: 'E-mail e/ou senha não enviados.' });
 }
 
 export const login = async (req: Request, res: Response) => {
