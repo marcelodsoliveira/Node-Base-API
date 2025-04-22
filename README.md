@@ -13,6 +13,9 @@ npm run start-dev
 PORT=3000
 
 PG_DB=auths
+
 PG_USER=postgres
+
 PG_PASSWORD=
+
 PG_PORT=5432
