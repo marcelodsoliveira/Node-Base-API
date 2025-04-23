@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
+import JWT from 'jsonwebtoken';
+import dotenv from 'dotenv';
 import { User } from '../models/User';
 
+dotenv.config();
 
 export const Auth = {
   private: async (req: Request, res: Response, next: NextFunction) => {
@@ -9,22 +12,22 @@ export const Auth = {
 
     // Fazendo verificação de auth
     if ( req.headers.authorization ) {
-      let hash:string = req.headers.authorization.substring(6);
-      let decoded = Buffer.from(hash, 'base64').toString();
-      let data:string[] = decoded.split(':');
-
-      // Verificação para saber se o usuário tentando login tem um usuário e senha no database
-      if(data.length == 2){
-        let hasUser = await User.findOne({
-          where: {
-            email: data[0],
-            password: data[1]
-          }
-        });
-        if(hasUser) {
+      
+      // Separado em array o bearer do token
+      const [authType, token] = req.headers.authorization.split(' ');
+      // Verifica se o tipo é Bearer
+      if (authType === 'Bearer') {
+        try {
+          JWT.verify(
+            token,
+            process.env.JWT_SECRET_KEY as string
+          );
           success = true;
+        } catch (err) {
+          // catch vazio para pular para o else abaixo
         }
-      }      
+      }
+
     }
 
     if(success) {
